@@ -1,3 +1,6 @@
+#Можно попробовать в терминале через фильтр
+#pip freeze | grep -Ei "scikit-learn|pandas|matplotlib" > requirements.txt
+
 import importlib.metadata
 packages = ['pandas', 'scikit-learn', 'matplotlib', 'fastapi', 'uvicorn', 'pydantic']
 with open("requirements.txt", "w") as f:
