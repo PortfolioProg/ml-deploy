@@ -5,9 +5,9 @@ with open('models/best_model_forest.pkl', 'rb') as f:
 
 # Новые данные
 new_data = pd.DataFrame({
-    'pclass': [3],
-    'age': [200],
-    'fare': [0]
+    'pclass': [1],
+    'age': [20],
+    'fare': [50]
 })
 
 # Предсказание
@@ -17,3 +17,4 @@ predictions = model.predict(new_data)
 #print(f'{new_data.pclass:}')
 print(new_data.iloc[0])
 print("Predicted Survival:", predictions)
+
