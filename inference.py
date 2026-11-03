@@ -5,7 +5,7 @@ with open('models/best_model_forest.pkl', 'rb') as f:
 
 # Новые данные
 new_data = pd.DataFrame({
-    'pclass': [1],
+    'pclass': [2],
     'age': [20],
     'fare': [50]
 })
