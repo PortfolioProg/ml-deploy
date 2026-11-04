@@ -34,6 +34,8 @@ def calc(num: int, mul: int):
 
 # curl -X POST http://localhost:5000/pred  -H "Content-Type: application/json"   -d '{"pclass": 2, "age": 2, "fare": 40}'
 
+# curl -X POST http://ml.dazparts.com/pred  -H "Content-Type: application/json"   -d '{"pclass": 2, "age": 2, "fare": 40}'
+
 @app.post('/pred')
 def pred(data: PrInp):
     df = pd.DataFrame({
@@ -46,7 +48,6 @@ def pred(data: PrInp):
     return {'prediction': result}
     
 
-
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='0.0.0.0', port=5000)
+    uvicorn.run("main:app", host='0.0.0.0', port=5000)
