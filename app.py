@@ -14,9 +14,25 @@ class PrInp(BaseModel):
 
 app = FastAPI()
 
+#curl http://127.0.0.1:5000
+
 @app.get('/')
 def status():
     return {'Status': 'OK'}
+
+# curl -X POST http://localhost:5000/calc -H "Content-Type: application/json" -d '{"num":5}'
+
+@app.post('/calc')
+def calc(data: dict):
+    return {'Result': data['num'] * 2}
+
+# curl -X POST "http://127.0.0.1:5000/calc2?num=5&mul=2"
+
+@app.post('/calc2')
+def calc(num: int, mul: int):
+    return {'Result': num * mul}
+
+# curl -X POST http://localhost:5000/pred  -H "Content-Type: application/json"   -d '{"pclass": 2, "age": 2, "fare": 40}'
 
 @app.post('/pred')
 def pred(data: PrInp):

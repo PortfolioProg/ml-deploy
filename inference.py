@@ -4,17 +4,16 @@ with open('models/best_model_forest.pkl', 'rb') as f:
   model = pickle.load(f)
 
 # Новые данные
-new_data = pd.DataFrame({
-    'pclass': [2],
-    'age': [20],
+df = pd.DataFrame({
+    'pclass': [1],
+    'age': [5],
     'fare': [50]
 })
 
 # Предсказание
-predictions = model.predict(new_data)
+predictions = model.predict(df)
 
 # Вывод результатов
-#print(f'{new_data.pclass:}')
-print(new_data.iloc[0])
+print(df.iloc[0])
 print("Predicted Survival:", predictions)
 
