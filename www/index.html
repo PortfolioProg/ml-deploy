@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Prediction</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px #0002;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input, select, button {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            margin-top: 25px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+
+        .success {
+            display: block !important;
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .failure {
+            display: block !important;
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .error {
+            display: block !important;
+            background: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Titanic Survival Prediction</h2>
+    <p>Enter the passenger details:</p>
+
+    <form id="predictionForm">
+
+        <label for="pclass">Ticket Class (Pclass)</label>
+        <select id="pclass">
+            <option value="1">1st Class</option>
+            <option value="2" selected>2nd Class</option>
+            <option value="3">3rd Class</option>
+        </select>
+
+        <label for="age">Age</label>
+        <input type="number" id="age"
+               value="10" min="0" max="120" step="1" required>
+
+        <label for="fare">Fare</label>
+        <input type="text" id="fare"
+               value="100" required>
+
+        <button type="submit" id="predictButton">
+            Predict
+        </button>
+
+    </form>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("predictionForm");
+const result = document.getElementById("result");
+const button = document.getElementById("predictButton");
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    result.className = "";
+    result.style.display = "none";
+
+    const pclass = Number(document.getElementById("pclass").value);
+    const age = Number(document.getElementById("age").value);
+
+    // Поддержка десятичной запятой
+    const fareText = document.getElementById("fare").value.trim();
+    const fare = Number(fareText.replace(",", "."));
+
+    if (!Number.isFinite(age) || age < 0 || age > 120 ||
+        !Number.isFinite(fare) || fare < 0) {
+
+        showResult("Please enter valid Age and Fare.", "error");
+        return;
+    }
+
+    const data = {
+        pclass: pclass,
+        age: age,
+        fare: fare
+    };
+
+    button.disabled = true;
+    button.textContent = "Predicting...";
+
+    try {
+
+        const response = await fetch("/api/pred", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP error: " + response.status);
+        }
+
+        const answer = await response.json();
+        const prediction = answer.prediction;
+
+        if (prediction === "Survived") {
+            showResult(
+                "✅ Survived! The passenger is predicted to have survived.",
+                "success"
+            );
+        } else if (prediction === "Not Survived") {
+            showResult(
+                "❌ Not Survived. The passenger is predicted not to have survived.",
+                "failure"
+            );
+        } else {
+            showResult("Unexpected API response.", "error");
+        }
+
+    } catch (error) {
+
+        showResult("API connection error: " + error.message, "error");
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "Predict";
+
+    }
+
+});
+
+function showResult(message, type) {
+    result.textContent = message;
+    result.className = type;
+}
+
+</script>
+
+</body>
+</html>
